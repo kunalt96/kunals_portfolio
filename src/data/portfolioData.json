@@ -1,0 +1,55 @@
+{
+  "personal": {
+    "name": "Kunal Tiwari",
+    "role": "Full Stack Developer",
+    "tagline": "Building digital products, brands, and experience.",
+    "bio": "I am a passionate developer with a knack for building beautiful and scalable applications.",
+    "email": "kunal@example.com"
+  },
+  "social": [
+    {
+      "platform": "GitHub",
+      "url": "https://github.com/kunaltiwari"
+    },
+    {
+      "platform": "LinkedIn",
+      "url": "https://linkedin.com/in/kunaltiwari"
+    },
+    {
+      "platform": "Twitter",
+      "url": "https://twitter.com/kunaltiwari"
+    }
+  ],
+  "experience": [
+    {
+      "id": 1,
+      "title": "Senior Software Engineer",
+      "company": "Tech Corp",
+      "duration": "2022 - Present",
+      "description": "Leading the development of highly scalable microservices."
+    },
+    {
+      "id": 2,
+      "title": "Software Developer",
+      "company": "Web Solutions",
+      "duration": "2019 - 2022",
+      "description": "Developed dynamic web applications using React and Node.js."
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "title": "Fixora Platform",
+      "description": "An advanced error monitoring and management dashboard.",
+      "tech": ["React", "Node.js", "Supabase"],
+      "link": "https://github.com/kunaltiwari/fixora"
+    },
+    {
+      "id": 2,
+      "title": "Quizly App",
+      "description": "A dynamic quiz generation platform using JWT auth.",
+      "tech": ["React", "Express", "MongoDB"],
+      "link": "https://github.com/kunaltiwari/quizly"
+    }
+  ]
+}
