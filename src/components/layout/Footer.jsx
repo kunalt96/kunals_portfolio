@@ -1,5 +1,7 @@
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa"
 import portfolioData from "../../data/portfolioData.json"
+import packageData from "../../../package.json"
+import { BiLogoDevTo } from "react-icons/bi";
 
 export default function Footer() {
   return (
@@ -10,9 +12,16 @@ export default function Footer() {
           <a href="#" className="font-medium underline underline-offset-4">
             {portfolioData.personal.name}
           </a>
+          <span className="ml-1 text-xs opacity-70">
+            v{packageData.version}
+          </span>
           .
         </p>
         <div className="flex items-center space-x-4">
+          <a href={portfolioData.social.find(s => s.platform === "DEVTO")?.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+            <BiLogoDevTo className="h-5 w-5" />
+            <span className="sr-only">DEVTO</span>
+          </a>
           <a href={portfolioData.social.find(s => s.platform === "GitHub")?.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
             <FaGithub className="h-5 w-5" />
             <span className="sr-only">GitHub</span>

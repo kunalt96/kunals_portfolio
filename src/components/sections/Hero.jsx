@@ -1,7 +1,33 @@
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ArrowRight, Download } from "lucide-react"
-import { Button, buttonVariants } from "../ui/button"
+import { buttonVariants } from "../ui/button"
 import portfolioData from "../../data/portfolioData.json"
+
+function useTypewriter(text, speed = 45, startDelay = 500) {
+  const [displayed, setDisplayed] = useState("")
+  const [done, setDone] = useState(false)
+
+  useEffect(() => {
+    setDisplayed("")
+    setDone(false)
+    let i = 0
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        setDisplayed(text.slice(0, i + 1))
+        i++
+        if (i >= text.length) {
+          clearInterval(interval)
+          setDone(true)
+        }
+      }, speed)
+      return () => clearInterval(interval)
+    }, startDelay)
+    return () => clearTimeout(timeout)
+  }, [text, speed, startDelay])
+
+  return { displayed, done }
+}
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -18,6 +44,8 @@ const itemVariants = {
 }
 
 export default function Hero() {
+  const { displayed, done } = useTypewriter(portfolioData.personal.tagline, 45, 600)
+
   return (
     <section className="container flex min-h-[calc(100vh-3.5rem)] max-w-screen-2xl flex-col items-center justify-center space-y-8 py-24 text-center md:py-32">
       <motion.div 
@@ -41,8 +69,17 @@ export default function Hero() {
           </p>
         </motion.div>
         
-        <motion.h1 variants={itemVariants} className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text py-6 text-5xl font-medium leading-none tracking-tighter text-transparent sm:text-6xl md:text-7xl lg:text-8xl dark:from-white dark:to-white/40">
-          {portfolioData.personal.tagline}
+        <motion.h1
+          variants={itemVariants}
+          className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text py-6 text-5xl font-medium leading-none tracking-tighter text-transparent sm:text-6xl md:text-7xl lg:text-8xl dark:from-white dark:to-white/40"
+        >
+          {displayed}
+          {/* Blinking cursor — hides once typing is done */}
+          <span
+            className={`inline-block w-[3px] ml-1 align-middle bg-black/60 rounded-sm
+              ${done ? "opacity-0" : "animate-pulse"}`}
+            style={{ height: "0.85em" }}
+          />
         </motion.h1>
         
         <motion.p variants={itemVariants} className="mx-auto max-w-[700px] text-lg text-muted-foreground sm:text-xl">

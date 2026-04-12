@@ -1,9 +1,9 @@
 {
   "personal": {
     "name": "Kunal Tiwari",
-    "role": "Full Stack JavaScript Developer",
+    "role": "Senior Frontend Engineer | Full Stack Developer",
     "tagline": "Building digital products, brands, and experience.",
-    "bio": "I am a passionate developer with a knack for building beautiful and scalable applications.",
+    "bio": "Building scalable digital experiences since 2018.I’m a passionate developer who has worked across fintech, education, testing, and media platforms—crafting high-performance applications using latest Web and App development technologies",
     "email": "kunaltiwari5596@gmail.com",
     "resumeLink": "https://drive.google.com/file/d/YOUR_DRIVE_FILE_ID/view?usp=sharing",
     "web3formsKey": "a8d81761-165e-4e22-846b-3d1f8995d651"
@@ -11,31 +11,79 @@
   "social": [
     {
       "platform": "GitHub",
-      "url": "https://github.com/kunaltiwari"
+      "url": "https://github.com/kunalt96"
     },
     {
       "platform": "LinkedIn",
-      "url": "https://linkedin.com/in/kunaltiwari"
+      "url": "https://www.linkedin.com/in/kunal-tiwari-1972a010b/"
     },
     {
       "platform": "Twitter",
-      "url": "https://twitter.com/kunaltiwari"
+      "url": "https://x.com/KunalTi72738877"
+    },
+    {
+      "platform": "DEVTO",
+      "url": "https://dev.to/kunalt96"
     }
   ],
   "experience": [
     {
       "id": 1,
-      "title": "Senior Software Engineer",
-      "company": "Tech Corp",
-      "duration": "2022 - Present",
-      "description": "Leading the development of highly scalable microservices."
+      "title": "Associate",
+      "company": "BlackRock",
+      "duration": "2023 - Present",
+      "description": "Frontend Developer for the Wealth business unit. Independently delivering critical features end-to-end and actively mentoring engineering interns."
     },
     {
       "id": 2,
-      "title": "Software Developer",
-      "company": "Web Solutions",
+      "title": "Senior Software Engineer",
+      "company": "Nous Infosystems",
+      "duration": "2021 - 2023",
+      "description": "Acted as the sole developer for a prominent fintech company, engineering critical features including an internationalization system that drove a 30% increase in user engagement."
+    },
+    {
+      "id": 1,
+      "title": "Application Engineer",
+      "company": "Logically",
+      "duration": "2022 - 2021",
+      "description": "Full Stack Developer. Architected and deployed an integrated feedback system that directly fed user data into Large Language Models (LLMs) for automated analysis."
+    },
+    {
+      "id": 2,
+      "title": "Senior System Engineer",
+      "company": "Infosys",
       "duration": "2019 - 2022",
-      "description": "Developed dynamic web applications using React and Node.js."
+      "description": "Full Stack Developer. Spearheaded the creation of 'GOAT', a critical testing utility allowing users to seamlessly validate their applications against robust, predefined test suites."
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "Ravindranath Mohanraj",
+      "role": "Engineering Manager at AstraZeneca",
+      "avatar": "RM",
+      "text": "The trait that impressed me the most in Kunal is his ability to quickly learn and implement the same in a real time projects. Highly motivated and has a thirst to learn new stuffs. Had a pleasure workin with him in my team and he was quick in scaling up to meet user requirements and deliver them a quality system."
+    },
+    {
+      "id": 2,
+      "name": "Charlotte McAndrew",
+      "role": "Senior Product Manager",
+      "avatar": "CM",
+      "text": "Kunal is incredibly hard working and communicative. He takes the challenges of working as a remo am head on, with a continuous will to understand user needs and learn more every day. Kunal h. a very positive attitude and he's a pleasure to work with."
+    },
+    {
+      "id": 3,
+      "name": "Amran Ali",
+      "role": "Senior staff engineer at Logically",
+      "avatar": "AA",
+      "text": "Kunal is a higly skilled front end developer and has shown great full stack progress. He is a fast learner and a great problem solver with a keen eye for design. I would highly recommend Kunal to anyone looking for either a front end developer or a full stack node js developer."
+    },
+    {
+      "id": 3,
+      "name": "Divyansh Tripathi",
+      "role": "Leading consultant",
+      "avatar": "DT",
+      "text": "Kunal's contribution to the Education, Training and Assessment department has been tremendous. He is always ready for new challenges and loves to explore on upcoming technologies. He is an avid learner and keeps on participating in hackathons and coding competitions. His keen observations have helped in enhancing the value of the content being developed and delivered. With his strong technical and analytical skills, he has already created a name for himself. He is a valuable asset to our team.Glad to have you on the team Kunal!"
     }
   ],
   "projects": [
@@ -43,14 +91,22 @@
       "id": 1,
       "title": "Fixora Platform",
       "description": "An advanced error monitoring and management dashboard.",
-      "tech": ["React", "Node.js", "Supabase"],
+      "tech": [
+        "React",
+        "Node.js",
+        "Supabase"
+      ],
       "link": "https://github.com/kunaltiwari/fixora"
     },
     {
       "id": 2,
       "title": "Quizly App",
       "description": "A dynamic quiz generation platform using JWT auth.",
-      "tech": ["React", "Express", "MongoDB"],
+      "tech": [
+        "React",
+        "Express",
+        "MongoDB"
+      ],
       "link": "https://github.com/kunaltiwari/quizly"
     }
   ]
