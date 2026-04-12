@@ -1,14 +1,21 @@
-import portfolioData from "./data/portfolioData.json"
+import Header from "./components/layout/Header"
+import Footer from "./components/layout/Footer"
+import Hero from "./components/sections/Hero"
+import Timeline from "./components/sections/Timeline"
+import Projects from "./components/sections/Projects"
+import Contact from "./components/sections/Contact"
 
 function App() {
   return (
-    <div className="min-h-screen bg-background text-foreground grid place-items-center">
-      <div className="space-y-4 text-center">
-        <h1 className="text-4xl font-bold tracking-tight">Setup Complete!</h1>
-        <p className="text-muted-foreground max-w-sm">
-          Tailwind, the Shadcn configuration, and {portfolioData.personal.name}'s JSON data are all hooked up and ready.
-        </p>
-      </div>
+    <div className="relative flex min-h-screen flex-col bg-background font-sans antialiased text-foreground selection:bg-primary selection:text-primary-foreground">
+      <Header />
+      <main className="flex-1">
+        <Hero />
+        <Timeline />
+        <Projects />
+        <Contact />
+      </main>
+      <Footer />
     </div>
   )
 }
