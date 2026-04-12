@@ -53,9 +53,9 @@ export default function Hero() {
           <a href="#contact" className={buttonVariants({ size: "lg", className: "h-12 px-8 flex items-center justify-center" })}>
             Hire Me <ArrowRight className="ml-2 h-4 w-4" />
           </a>
-          <Button size="lg" variant="outline" className="h-12 px-8 flex items-center justify-center">
+          <a href={portfolioData.personal.resumeLink} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "outline", size: "lg", className: "h-12 px-8 flex items-center justify-center" })}>
             <Download className="mr-2 h-4 w-4" /> Resume
-          </Button>
+          </a>
         </motion.div>
       </motion.div>
     </section>

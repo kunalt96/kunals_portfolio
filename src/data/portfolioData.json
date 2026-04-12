@@ -1,10 +1,12 @@
 {
   "personal": {
     "name": "Kunal Tiwari",
-    "role": "Full Stack Developer",
+    "role": "Full Stack JavaScript Developer",
     "tagline": "Building digital products, brands, and experience.",
     "bio": "I am a passionate developer with a knack for building beautiful and scalable applications.",
-    "email": "kunal@example.com"
+    "email": "kunaltiwari5596@gmail.com",
+    "resumeLink": "https://drive.google.com/file/d/YOUR_DRIVE_FILE_ID/view?usp=sharing",
+    "web3formsKey": "a8d81761-165e-4e22-846b-3d1f8995d651"
   },
   "social": [
     {
