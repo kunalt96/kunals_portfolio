@@ -1,57 +1,134 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from "framer-motion"
 import { Menu, X } from "lucide-react"
-import { buttonVariants } from "../ui/button"
+import useActiveSection from "../../hooks/useActiveSection"
+import data from "../../data/portfolioData.json"
+
+const LINKS = [
+  { id: "about", label: "About" },
+  { id: "experience", label: "Experience" },
+  { id: "projects", label: "Projects" },
+  { id: "testimonials", label: "Kind words" },
+]
+const IDS = LINKS.map((l) => l.id).concat("contact")
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const reduce = useReducedMotion()
+  const active = useActiveSection(IDS)
+  const firstLink = useRef(null)
+
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 28, mass: 0.2 })
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  // Lock page scroll and close on Escape while the mobile menu is open.
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    const onKey = (e) => e.key === "Escape" && setOpen(false)
+    window.addEventListener("keydown", onKey)
+    firstLink.current?.focus()
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener("keydown", onKey)
+    }
+  }, [open])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center justify-between">
-        {/* Logo Section */}
-        <div className="flex items-center space-x-2">
-          <a className="font-bold flex items-center" href="/">
-            Kunal Tiwari
-          </a>
-        </div>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
+        scrolled || open ? "bg-abyss/80 backdrop-blur-md" : "bg-transparent"
+      }`}
+    >
+      <div className="wrap flex h-16 items-center justify-between">
+        <a href="#top" className="font-display text-lg font-semibold tracking-tight [font-stretch:85%]">
+          {data.personal.name}
+        </a>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex flex-1 items-center justify-between pl-6 text-sm font-medium">
-          <nav className="flex space-x-6">
-            <a className="transition-colors hover:text-foreground/80 text-foreground/60" href="#about">About</a>
-            <a className="transition-colors hover:text-foreground/80 text-foreground/60" href="#projects">Projects</a>
-            <a className="transition-colors hover:text-foreground/80 text-foreground/60" href="#timeline">Timeline</a>
-          </nav>
-          <a href="#contact" className={buttonVariants({ variant: "default", size: "sm" })}>
-            Contact Me
+        <nav className="hidden items-center gap-9 md:flex" aria-label="Primary">
+          {LINKS.map((l) => (
+            <a
+              key={l.id}
+              href={`#${l.id}`}
+              aria-current={active === l.id ? "true" : undefined}
+              className={`relative text-[0.95rem] transition-colors duration-300 ${
+                active === l.id ? "text-foam" : "text-mist hover:text-foam"
+              }`}
+            >
+              {l.label}
+              {active === l.id && (
+                <motion.span
+                  layoutId="nav-underline"
+                  className="absolute -bottom-1.5 left-0 right-0 h-px bg-gold"
+                  transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }}
+                />
+              )}
+            </a>
+          ))}
+          <a href="#contact" className="btn btn-line h-10 px-5 text-sm">
+            Contact
           </a>
-        </div>
+        </nav>
 
-        {/* Mobile Navigation Toggle */}
-        <div className="flex md:hidden flex-1 items-center justify-end space-x-2">
-          <a href="#contact" className={buttonVariants({ variant: "default", size: "sm", className: "h-8" })}>
-            Contact Me
-          </a>
-          <button 
-            className="p-1 -mr-1" 
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
+        <button
+          type="button"
+          className="-mr-2 grid h-11 w-11 place-items-center md:hidden"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+        >
+          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {isOpen && (
-        <div className="md:hidden border-b bg-background px-4 py-4 space-y-4">
-          <nav className="flex flex-col space-y-4 text-sm font-medium">
-            <a className="transition-colors hover:text-primary text-foreground/70" href="#about" onClick={() => setIsOpen(false)}>About</a>
-            <a className="transition-colors hover:text-primary text-foreground/70" href="#projects" onClick={() => setIsOpen(false)}>Projects</a>
-            <a className="transition-colors hover:text-primary text-foreground/70" href="#timeline" onClick={() => setIsOpen(false)}>Timeline</a>
-          </nav>
-        </div>
-      )}
+      {/* Reading progress */}
+      <motion.div
+        aria-hidden="true"
+        style={{ scaleX: reduce ? 0 : progress }}
+        className="absolute inset-x-0 bottom-0 h-px origin-left bg-gold"
+      />
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="mobile-menu"
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-x-0 bottom-0 top-16 bg-abyss md:hidden"
+          >
+            <nav className="wrap flex h-full flex-col justify-center gap-2 pb-24" aria-label="Mobile">
+              {LINKS.concat({ id: "contact", label: "Contact" }).map((l, i) => (
+                <motion.a
+                  key={l.id}
+                  ref={i === 0 ? firstLink : undefined}
+                  href={`#${l.id}`}
+                  onClick={() => setOpen(false)}
+                  initial={reduce ? false : { opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 * i, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className={`font-display text-5xl font-semibold tracking-tight [font-stretch:84%] ${
+                    active === l.id ? "text-gold" : "text-foam"
+                  }`}
+                >
+                  {l.label}
+                </motion.a>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }

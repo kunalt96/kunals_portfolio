@@ -1,119 +1,93 @@
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
-import portfolioData from "../../data/portfolioData.json"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import Section from "../Section"
+import data from "../../data/portfolioData.json"
+
+const items = data.testimonials
 
 export default function Testimonials() {
-  const items = portfolioData.testimonials
-  const [index, setIndex] = useState(0)
-  const [direction, setDirection] = useState(1)
+  const reduce = useReducedMotion()
+  const [[index, dir], setPage] = useState([0, 1])
+  const t = items[index]
+  const long = t.text.length > 380
 
-  const paginate = (dir) => {
-    setDirection(dir)
-    setIndex((prev) => (prev + dir + items.length) % items.length)
-  }
-
-  const variants = {
-    enter: (dir) => ({ opacity: 0, x: dir > 0 ? 60 : -60 }),
-    center: { opacity: 1, x: 0 },
-    exit: (dir) => ({ opacity: 0, x: dir > 0 ? -60 : 60 }),
-  }
+  const go = (d) => setPage(([i]) => [(i + d + items.length) % items.length, d])
 
   return (
-    <section id="testimonials" className="py-24 md:py-32 bg-slate-50/50">
-      <div className="container max-w-4xl">
-        {/* Header */}
-        <motion.div
-          className="mx-auto max-w-[58rem] text-center mb-16"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <h2 className="font-bold text-3xl leading-[1.1] sm:text-3xl md:text-5xl">
-            Kind Words
-          </h2>
-          <p className="mt-4 text-muted-foreground sm:text-lg">
-            What colleagues and collaborators say about working with me.
-          </p>
-        </motion.div>
-
-        {/* Carousel */}
-        <motion.div
-          className="relative flex flex-col items-center"
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-        >
-          <div className="w-full overflow-hidden relative min-h-[260px] flex items-center justify-center">
-            <AnimatePresence custom={direction} mode="wait">
-              <motion.div
-                key={index}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ type: "spring", stiffness: 260, damping: 30 }}
-                className="w-full max-w-2xl mx-auto"
+    <Section id="testimonials" title="Kind words" lead="From managers and teammates I've worked with.">
+      <div
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Testimonials"
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight") go(1)
+          if (e.key === "ArrowLeft") go(-1)
+        }}
+      >
+        <div className="relative min-h-[22rem] sm:min-h-[19rem]" aria-live="polite">
+          <AnimatePresence mode="wait" custom={dir} initial={false}>
+            <motion.figure
+              key={t.id}
+              custom={dir}
+              initial={reduce ? { opacity: 0 } : { opacity: 0, x: dir * 36 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, x: dir * -36 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <blockquote
+                className="font-serif italic text-foam"
+                style={{
+                  fontSize: long ? "clamp(1.3rem, 2.1vw, 1.75rem)" : "clamp(1.6rem, 2.8vw, 2.25rem)",
+                  lineHeight: 1.3,
+                  letterSpacing: "-0.005em",
+                  fontVariationSettings: '"opsz" 36',
+                }}
               >
-                <div className="rounded-2xl border bg-background p-8 shadow-sm text-center space-y-6">
-                  {/* Quote icon */}
-                  <Quote className="h-8 w-8 text-primary/30 mx-auto" />
+                &ldquo;{t.text}&rdquo;
+              </blockquote>
+              <figcaption className="mt-8 flex items-center gap-4">
+                <span
+                  aria-hidden="true"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-gold/60 font-display text-sm font-semibold text-gold"
+                >
+                  {t.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)}
+                </span>
+                <span>
+                  <span className="block font-medium">{t.name}</span>
+                  <span className="block text-sm text-mist">{t.role}</span>
+                </span>
+              </figcaption>
+            </motion.figure>
+          </AnimatePresence>
+        </div>
 
-                  {/* Text */}
-                  <p className="text-lg leading-relaxed text-foreground italic">
-                    &ldquo;{items[index].text}&rdquo;
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex flex-col items-center gap-2 pt-2">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                      {items[index].avatar}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm">{items[index].name}</p>
-                      <p className="text-xs text-muted-foreground">{items[index].role}</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-6 mt-8">
-            <button
-              onClick={() => paginate(-1)}
-              className="h-9 w-9 rounded-full border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
-              aria-label="Previous"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-
-            {/* Dots */}
-            <div className="flex gap-2">
-              {items.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => { setDirection(i > index ? 1 : -1); setIndex(i) }}
-                  className={`h-2 rounded-full transition-all duration-300 ${i === index ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30"}`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={() => paginate(1)}
-              className="h-9 w-9 rounded-full border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
-              aria-label="Next"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-        </motion.div>
+        <div className="mt-10 flex items-center gap-3 border-t border-foam/10 pt-6">
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label="Previous testimonial"
+            className="grid h-11 w-11 place-items-center rounded-full border border-foam/20 transition-colors hover:border-gold hover:text-gold"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => go(1)}
+            aria-label="Next testimonial"
+            className="grid h-11 w-11 place-items-center rounded-full border border-foam/20 transition-colors hover:border-gold hover:text-gold"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+          <p className="ml-3 text-sm tabular-nums text-mist">
+            {index + 1} of {items.length}
+          </p>
+        </div>
       </div>
-    </section>
+    </Section>
   )
 }

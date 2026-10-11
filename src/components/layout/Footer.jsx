@@ -1,38 +1,38 @@
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa"
-import portfolioData from "../../data/portfolioData.json"
-import packageData from "../../../package.json"
-import { BiLogoDevTo } from "react-icons/bi";
+import { FaGithub, FaLinkedinIn, FaXTwitter, FaDev } from "react-icons/fa6"
+import { ArrowUp } from "lucide-react"
+import data from "../../data/portfolioData.json"
+
+const ICONS = { GitHub: FaGithub, LinkedIn: FaLinkedinIn, X: FaXTwitter, DEV: FaDev }
 
 export default function Footer() {
   return (
-    <footer className="border-t py-6 md:py-0">
-      <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
-        <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-          Built by{" "}
-          <a href="#" className="font-medium underline underline-offset-4">
-            {portfolioData.personal.name}
-          </a>
-          <span className="ml-1 text-xs opacity-70">
-            v{packageData.version}
-          </span>
-          .
+    <footer className="border-t border-foam/10">
+      <div className="wrap flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-mist">
+          &copy; {new Date().getFullYear()} {data.personal.name}. Designed and built by hand with React.
         </p>
-        <div className="flex items-center space-x-4">
-          <a href={portfolioData.social.find(s => s.platform === "DEVTO")?.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-            <BiLogoDevTo className="h-5 w-5" />
-            <span className="sr-only">DEVTO</span>
-          </a>
-          <a href={portfolioData.social.find(s => s.platform === "GitHub")?.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-            <FaGithub className="h-5 w-5" />
-            <span className="sr-only">GitHub</span>
-          </a>
-          <a href={portfolioData.social.find(s => s.platform === "Twitter")?.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-            <FaTwitter className="h-5 w-5" />
-            <span className="sr-only">Twitter</span>
-          </a>
-          <a href={portfolioData.social.find(s => s.platform === "LinkedIn")?.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-            <FaLinkedin className="h-5 w-5" />
-            <span className="sr-only">LinkedIn</span>
+
+        <div className="flex items-center gap-1">
+          {data.social.map((s) => {
+            const Icon = ICONS[s.platform]
+            return (
+              <a
+                key={s.platform}
+                href={s.url}
+                target="_blank"
+                rel="noreferrer"
+                className="grid h-11 w-11 place-items-center text-mist transition-colors hover:text-gold"
+                aria-label={s.platform}
+              >
+                <Icon className="h-[1.1rem] w-[1.1rem]" />
+              </a>
+            )
+          })}
+          <a
+            href="#top"
+            className="ml-2 inline-flex h-11 items-center gap-2 pl-3 text-sm text-mist transition-colors hover:text-gold"
+          >
+            Back to top <ArrowUp className="h-4 w-4" />
           </a>
         </div>
       </div>

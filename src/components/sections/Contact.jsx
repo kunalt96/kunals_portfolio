@@ -1,97 +1,145 @@
 import { useState } from "react"
-import { motion } from "framer-motion"
-import { Send, CheckCircle2 } from "lucide-react"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
-import { Textarea } from "../ui/textarea"
-import { Label } from "../ui/label"
-import portfolioData from "../../data/portfolioData.json"
+import { Check, Copy } from "lucide-react"
+import data from "../../data/portfolioData.json"
+
+const { email, web3formsKey } = data.personal
+
+const field =
+  "w-full border-0 border-b border-foam/25 bg-transparent px-0 py-3 text-lg text-foam placeholder:text-mist/60 transition-colors focus:border-gold focus:outline-none focus:ring-0 disabled:opacity-50"
 
 export default function Contact() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
+  const [status, setStatus] = useState("idle") // idle | sending | sent | error
+  const [copied, setCopied] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    const formData = new FormData(e.target)
-    formData.append("access_key", portfolioData.personal.web3formsKey)
-
+  const copyEmail = async () => {
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData
-      })
-      const data = await response.json()
-      if (data.success) {
-        setIsSuccess(true)
-        e.target.reset()
-      } else {
-        alert("Something went wrong. Please email directly")
-      }
-    } catch (error) {
-      alert("Something went wrong. Please email directly.")
-    } finally {
-      setIsSubmitting(false)
+      await navigator.clipboard.writeText(email)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      window.location.href = `mailto:${email}`
+    }
+  }
+
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    const form = e.currentTarget
+    setStatus("sending")
+    const body = new FormData(form)
+    body.append("access_key", web3formsKey)
+    body.append("subject", "New message from your portfolio")
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body })
+      const json = await res.json()
+      if (!json.success) throw new Error("rejected")
+      form.reset()
+      setStatus("sent")
+    } catch {
+      setStatus("error")
     }
   }
 
   return (
-    <section id="contact" className="container max-w-4xl py-24 md:py-32">
-      <motion.div
-        className="mx-auto max-w-[58rem] text-center"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
-        <h2 className="font-bold text-3xl leading-[1.1] sm:text-3xl md:text-5xl">Let's Connect</h2>
-        <p className="mt-4 text-muted-foreground sm:text-lg">
-          Interested in working together or have a question? Drop me a message!
-        </p>
-      </motion.div>
+    <section id="contact" className="relative overflow-hidden border-t border-foam/10">
+      <div className="wrap grid gap-16 py-24 md:grid-cols-12 md:gap-10 md:py-36">
+        <div className="md:col-span-6">
+          <h2
+            className="font-display font-semibold text-foam"
+            style={{
+              fontSize: "clamp(3.5rem, 10vw, 9rem)",
+              lineHeight: 0.92,
+              letterSpacing: "-0.03em",
+              fontStretch: "80%",
+            }}
+          >
+            Let&rsquo;s talk.
+          </h2>
+          <p className="prose-serif mt-8 max-w-md">
+            Have a product to build, a team to join or a question about my work? Send a note and I&rsquo;ll reply by
+            email.
+          </p>
 
-      <motion.div
-        className="mx-auto mt-12 max-w-lg"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2 }}
-      >
-        {isSuccess ? (
-          <div className="flex flex-col items-center justify-center space-y-4 rounded-lg border bg-card p-12 text-center text-card-foreground shadow-sm">
-            <CheckCircle2 className="h-12 w-12 text-green-500" />
-            <h3 className="text-xl font-bold">Message Sent!</h3>
-            <p className="text-muted-foreground">Thank you for reaching out. I'll get back to you soon.</p>
-            <Button variant="outline" className="mt-4" onClick={() => setIsSuccess(false)}>Send Another Message</Button>
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <a
+              href={`mailto:${email}`}
+              className="font-display text-xl font-medium underline decoration-gold decoration-1 underline-offset-[6px] transition-colors hover:text-gold sm:text-2xl"
+            >
+              {email}
+            </a>
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-foam/20 px-4 text-sm text-mist transition-colors hover:border-gold hover:text-gold"
+            >
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? "Copied" : "Copy email"}
+            </button>
           </div>
-        ) : (
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" name="name" placeholder="John Doe" required disabled={isSubmitting} />
+        </div>
+
+        <div className="md:col-span-6 lg:col-span-5 lg:col-start-8">
+          {status === "sent" ? (
+            <div role="status" className="rounded-2xl border border-gold/40 p-10">
+              <Check className="h-8 w-8 text-gold" />
+              <h3 className="mt-5 font-display text-3xl font-semibold [font-stretch:86%]">Message sent</h3>
+              <p className="prose-serif mt-3">Thanks for reaching out. I&rsquo;ll get back to you soon.</p>
+              <button type="button" onClick={() => setStatus("idle")} className="btn btn-line mt-8">
+                Send another message
+              </button>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" placeholder="john@example.com" required disabled={isSubmitting} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea
-                id="message"
-                name="message"
-                placeholder="Hi Kunal, I'd like to talk about a project..."
-                className="min-h-[120px] resize-y"
-                required
-                disabled={isSubmitting}
-              />
-            </div>
-            <Button type="submit" className="w-full h-11 text-base" disabled={isSubmitting}>
-              {isSubmitting ? "Sending..." : "Send Message"} {!isSubmitting && <Send className="ml-2 h-4 w-4" />}
-            </Button>
-          </form>
-        )}
-      </motion.div>
+          ) : (
+            <form onSubmit={onSubmit} className="space-y-8" noValidate={false}>
+              {/* Spam trap read by Web3Forms. Real visitors never see it. */}
+              <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" />
+
+              <div>
+                <label htmlFor="name" className="text-sm text-mist">
+                  Your name
+                </label>
+                <input id="name" name="name" required autoComplete="name" disabled={status === "sending"} className={field} />
+              </div>
+              <div>
+                <label htmlFor="email" className="text-sm text-mist">
+                  Your email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  disabled={status === "sending"}
+                  className={field}
+                />
+              </div>
+              <div>
+                <label htmlFor="message" className="text-sm text-mist">
+                  What would you like to build?
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows={4}
+                  disabled={status === "sending"}
+                  className={`${field} resize-y`}
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-5">
+                <button type="submit" disabled={status === "sending"} className="btn btn-gold disabled:opacity-60">
+                  {status === "sending" ? "Sending message" : "Send message"}
+                </button>
+                {status === "error" && (
+                  <p role="alert" className="text-sm text-[#ff8f7a]">
+                    The message didn&rsquo;t send. Try again, or email {email} directly.
+                  </p>
+                )}
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
     </section>
   )
 }
